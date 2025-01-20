@@ -1,7 +1,5 @@
 from .models import Post, Comment, Like, SavedPost
 from rest_framework import serializers
-from rest_framework import request
-from user.serializers import SignupSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
