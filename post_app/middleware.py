@@ -16,12 +16,12 @@ class UUIDValidationMiddleware:
     def check_uuid_in_url(self, request):
         try:
             resolved = resolve(request.path_info)
-            url_params = resolved.kwargs 
+            url_params = resolved.kwargs
             print(f"{url_params = }")
            
         except Exception as e:
-            return None 
-
+            return None
+        
         for param, value in url_params.items():
             if not self.is_valid_uuid(value):
                 return JsonResponse(

@@ -8,7 +8,6 @@ def custom_exception_handler(exc, context):
     """
     # Call the default exception handler first
     response = exception_handler(exc, context)
-    
     if response is not None:
         # Customize error message formatting only for 400 errors (bad requests)
         if response.status_code == status.HTTP_400_BAD_REQUEST:
@@ -17,9 +16,7 @@ def custom_exception_handler(exc, context):
         # Example: Handle other errors like permission denied
         elif response.status_code == status.HTTP_403_FORBIDDEN:
             response.data = {"detail": "You do not have permission to perform this action."}
-    
-
-    
+        
     # Check if there's a validation error (or any other error you want to handle)
     if response is not None and response.status_code == status.HTTP_400_BAD_REQUEST:
         # Modify the error format
