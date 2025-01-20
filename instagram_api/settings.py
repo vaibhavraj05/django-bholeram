@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'celery'
 ]
-
-import os
 # from dotenv import load_dotenv
 # env_path = '/Users/apple/Desktop/instagram_api/practise/.env'
 # load_dotenv(dotenv_path=env_path)

@@ -2,7 +2,6 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Post, Comment, Like
 from .serializers import *
-from rest_framework.permissions import IsAuthenticated
 from .paginations import CustomPagination
 from rest_framework.viewsets import ModelViewSet
 from django.shortcuts import get_object_or_404
@@ -236,11 +235,7 @@ class ReplyCommentViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, IsUserVerified]
    
     def create(self, request, *args, **kwargs):
-        post_id = self.kwargs.get('post_id')
         comment_id = self.kwargs.get("comment_id")
-        if post_id :
-            post = get_object_or_404(Post,id = post_id, is_deleted = False)
-            comment = get_object_or_404(Comment, post = post_id , is_deleted = False)
         
         parent_comment = get_object_or_404(Comment,id = comment_id, is_deleted=False)
         serializer = self.get_serializer(data=request.data)
