@@ -1,23 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import NotFound, ValidationError
-from rest_framework.decorators import api_view, permission_classes
 from .models import Post, Comment, Like
-from user.models import User
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated
 from .paginations import CustomPagination
 from rest_framework.viewsets import ModelViewSet
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import ValidationError
-from rest_framework import serializers
 from rest_framework.response import Response
-from .permissions import IsOwnerOrCommentAuthor
 from rest_framework import status
-from .response import response
 from django.utils import timezone
 from user.permissions import IsUserVerified
-from .permissions import IsOwnerOrFollower
 import logging
 
 

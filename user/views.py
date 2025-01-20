@@ -6,21 +6,16 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .utils import *
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
 from rest_framework.response import Response
 from .authentications import get_token_for_user
 from .permissions import IsUserVerified
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets
 from .serializers import *
 from .tasks import send_otp_email, send_reset_password_email
 from .models import OtpVerification
 from .utils import generate_otp
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from post_app.serializers import PostSerializer
-from post_app.models import Post
 from rest_framework.permissions import AllowAny
 from .utils import format_errors
 
@@ -196,7 +191,6 @@ class SendResetPasswordEmail(APIView):
                 {"message": "Password reset link sent successfully."},
                 status=status.HTTP_200_OK,
             )
-        error_detail = format_errors(serializer.error)
         return Response({"detail" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
