@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "2"
+    alb.ingress.kubernetes.io/scheme: "internet-facing"  # Change to "internal" if needed
+    alb.ingress.kubernetes.io/target-type: "ip"
+    # alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:265697931443:certificate/34b754e4-f111-45c8-a914-dde2c2bfc80a"
+    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    # alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    # cert-manager.io/cluster-issuer: letsencrypt
+    external-dns.alpha.kubernetes.io/hostname: frontend-test.aftl.biz
+spec:
+  ingressClassName: alb  # New way to specify the ingress class
+  # tls:
+  #   - hosts:
+  #       - frontend-test.aftl.biz
+  #       - test2-eks.jarvisaccel.com 
+  #       - test-eks.jarvisaccel.com
+  #     secretName: letsencrypt-secret
+  rules:
+    - host: frontend-test.aftl.biz
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 3001
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 3000

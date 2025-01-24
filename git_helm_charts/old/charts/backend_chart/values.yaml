@@ -1,0 +1,18 @@
+replicaCount: 1
+
+postgresSecretKeys:
+  connectionString: eks-practice
+image:
+  repository: 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo
+  tag: "2"
+  pullPolicy: Always
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 3001
+
+env:
+  port: 3001
+
+secretRegion: us-east-1

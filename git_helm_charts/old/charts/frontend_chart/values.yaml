@@ -1,0 +1,14 @@
+replicaCount: 1
+
+image:
+  repository: 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo
+  tag: "1"
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 3000
+  targetPort: 3000
+
+env:
+  VITE_HOST: "http://frontend-test.aftl.biz"

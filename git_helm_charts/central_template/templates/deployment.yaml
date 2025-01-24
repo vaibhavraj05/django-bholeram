@@ -1,0 +1,162 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.DeploymentName }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+      labels:
+        {{- include "chart.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      {{- if .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers:
+        {{- range .Values.initContainers }}
+        - name: {{ .name }}
+          image: "{{ .image.name }}:{{ .image.tag }}"
+          imagePullPolicy: {{ .imagePullPolicy | default "IfNotPresent" }}
+          {{- if .command }}
+          command:
+            {{- toYaml .command | nindent 12 }}
+          {{- end }}
+          {{- if .args }}
+          args:
+            {{- toYaml .args | nindent 12 }}
+          {{- end }}
+          {{- if .resources }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+          {{- end }}
+          {{- if .volumeMounts }}
+          volumeMounts:
+            {{- toYaml .volumeMounts | nindent 12 }}
+          {{- end }}
+          {{- if .env }}
+          env:
+            {{- toYaml .env | nindent 12 }}
+          {{- end }}
+          {{- if .envFrom }}
+          envFrom:
+            {{- toYaml .envFrom | nindent 12 }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      containers:
+        {{- range .Values.containers }}
+        - name: {{ .name }}
+          image: "{{ .image.name }}:{{ .image.tag }}"
+          imagePullPolicy: {{ .imagePullPolicy | default "IfNotPresent" }}
+          ports:
+            {{- range .ports }}
+            - name: {{ .name }}
+              containerPort: {{ .containerPort }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
+          {{- if .command }}
+          command:
+            {{- toYaml .command | nindent 12 }}
+          {{- end }}
+          {{- if .args }}
+          args:
+            {{- toYaml .args | nindent 12 }}
+          {{- end }}
+          {{- if .livenessProbe }}
+          livenessProbe:
+            {{- toYaml .livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .readinessProbe }}
+          readinessProbe:
+            {{- toYaml .readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .resources }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+          {{- end }}
+          {{- if .volumeMounts }}
+          volumeMounts:
+            {{- toYaml .volumeMounts | nindent 12 }}
+          {{- end }}
+          {{- if .env }}
+          env:
+            {{- toYaml .env | nindent 12 }}
+          {{- end }}
+          {{- if .envFrom }}
+          envFrom:
+            {{- toYaml .envFrom | nindent 12 }}
+          {{- end }}
+          {{- if .lifecycle }}
+          lifecycle:
+            {{- with .lifecycle }}
+            postStart:
+              {{- if .postStart }}
+              {{- if .postStart.exec }}
+              exec:
+                command: 
+                  {{- toYaml .postStart.exec.command | nindent 16 }}
+              {{- end }}
+              {{- if .postStart.httpGet }}
+              httpGet:
+                path: {{ .postStart.httpGet.path | quote }}
+                port: {{ .postStart.httpGet.port }}
+                host: {{ .postStart.httpGet.host | quote }}
+                scheme: {{ .postStart.httpGet.scheme | default "HTTP" }}
+                httpHeaders:
+                  {{- toYaml .postStart.httpGet.headers | nindent 16 }}
+              {{- end }}
+              {{- if .postStart.tcpSocket }}
+              tcpSocket:
+                port: {{ .postStart.tcpSocket.port }}
+              {{- end }}
+              {{- end }}
+            preStop:
+              {{- if .preStop }}
+              {{- if .preStop.exec }}
+              exec:
+                command: 
+                  {{- toYaml .preStop.exec.command | nindent 16 }}
+              {{- end }}
+              {{- if .preStop.httpGet }}
+              httpGet:
+                path: {{ .preStop.httpGet.path | quote }}
+                port: {{ .preStop.httpGet.port }}
+                host: {{ .preStop.httpGet.host | quote }}
+                scheme: {{ .preStop.httpGet.scheme | default "HTTP" }}
+                httpHeaders:
+                  {{- toYaml .preStop.httpGet.headers | nindent 16 }}
+              {{- end }}
+              {{- if .preStop.tcpSocket }}
+              tcpSocket:
+                port: {{ .preStop.tcpSocket.port }}
+              {{- end }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- if .Values.volumes }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      {{- end }}

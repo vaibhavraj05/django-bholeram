@@ -1,0 +1,16 @@
+{{- if .Values.persistance.enable -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.persistance.name }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+spec:
+  accessModes:
+    - {{ .Values.persistance.accessModes | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistance.size }}
+  storageClassName: {{ .Values.persistance.storageClass | quote }}
+{{- end -}}

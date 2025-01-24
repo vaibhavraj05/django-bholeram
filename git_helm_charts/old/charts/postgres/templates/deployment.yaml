@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-db
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-db
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-db
+    spec:
+      containers:
+      - name: db
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+          - name: POSTGRES_USER
+            value: {{ .Values.postgresql.username }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.postgresql.password }}
+          - name: POSTGRES_DB
+            value: {{ .Values.postgresql.database }}
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+          - name: pgdata
+            mountPath: /var/lib/postgresql/data
+            subPath: data
+          - name: init-sql-scripts
+            mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: pgdata
+        persistentVolumeClaim:
+          claimName: pgdata-pvc
+      - name: init-sql-scripts
+        configMap:
+          name: {{ .Values.initSqlScripts.configMapName }}

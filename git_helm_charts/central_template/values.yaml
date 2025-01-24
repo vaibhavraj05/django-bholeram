@@ -1,0 +1,302 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+DeploymentName: my-deployment
+replicaCount: 1
+
+# values.yaml
+
+command: {}    # Overrides the default docker Entrypoint
+  # - /bin/sh
+  # - -c
+  # - "echo 'Hello, World!' && sleep 3600"
+
+args:  {} # Overrides the default docker CMD
+  # - "-v"
+
+env: {}
+  # - name: DB_HOST
+  #   value: "my-database.example.com"
+  # - name: DB_PORT
+  #   value: "5432"
+  # - name: DB_USER
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: my-database-secret
+  #       key: db_user
+  # - name: DB_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: my-database-secret
+  #       key: db_password
+
+# Environment variables from Secret/ConfigMap
+envFrom: {}
+  # - secretRef:
+  #     name: my-database-secret
+  # - configMapRef:
+  #     name: my-app-config
+
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+# image:
+#   repository: nginx
+#   # This sets the pull policy for images.
+#   pullPolicy: IfNotPresent
+#   # Overrides the image tag whose default is the chart appVersion.
+#   tag: ""
+
+# This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+initContainers: {}
+
+containers: {}
+  # - name: app-container
+  #   image:
+  #     name: "my-app-image"
+  #     tag: "latest"
+  #   imagePullPolicy: IfNotPresent
+  #   command:        # Overrides the default docker Command 
+  #     - /bin/sh
+  #     - -c
+  #     - "echo Hello && sleep 3600"
+  #   args:
+  #     - --example
+  #   ports:
+  #     - containerPort: 8080
+  #       name: http
+  #       protocol: TCP
+  #   env:
+  #     - name: ENV_VAR_NAME
+  #       value: "value"
+  #   envFrom:
+  #     - configMapRef:
+  #         name: my-config
+  #   resources:
+  #     requests:
+  #       memory: "64Mi"
+  #       cpu: "250m"
+  #     limits:
+  #       memory: "128Mi"
+  #       cpu: "500m"
+  #   volumeMounts:
+  #     - name: my-volume
+  #       mountPath: /data
+  #     - name: foo
+  #       mountPath: "/etc/foo"
+  #       readOnly: true
+  #   livenessProbe:
+  #     httpGet:
+  #       path: /healthz
+  #       port: 8080
+  #       initialDelaySeconds: 3
+  #       periodSeconds: 5
+  #   readinessProbe:
+  #     httpGet:
+  #       path: /readiness
+  #       port: 8080
+  #       initialDelaySeconds: 5
+  #       periodSeconds: 5
+  # - name: my-container
+  #   image:
+  #     name: nginx
+  #     tag: latest
+  #   lifecycle:
+  #     postStart:
+  #       exec:
+  #         command: ["sh", "-c", "echo 'Container started!'"]
+  #     preStop:
+  #       httpGet:
+  #         path: /shutdown
+  #         port: 8080
+  #         host: "localhost"
+  #         scheme: "HTTP"
+  #         headers:
+  #           - name: "Authorization"
+  #             value: "Bearer mytoken"
+
+
+# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: 
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  enable: false
+  name: service_name
+  # This sets the service type more information 
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 80
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enable: false
+  name: ingress_name
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      serviceName: my-service      # Default serviceName for this host
+      portNumber: 80              # Default portNumber for this host
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+        - path: /api
+          pathType: Exact         # Specific pathType for /api
+          serviceName: abc
+          portNumber: 80
+        - path: /health
+          # pathType is not defined, so it will default to "Prefix"
+          serviceName: abc
+          portNumber: 80
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe: {}
+  # httpGet:
+  #   path: /
+  #   port: http
+readinessProbe: {}
+  # httpGet:
+  #   path: /
+  #   port: http
+
+# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling:
+  enable: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+# volumes:
+#   - name: my-volume
+#     emptyDir: {}  # Creates an emptyDir volume
+#   - name: config-volume
+#     configMap:
+#       name: my-config-map
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+externalSecrets:
+  enable: false
+  # Name of the pre-configured secret store in your Kubernetes cluster
+  secretStoreName: my-aws-secret-store
+  
+  # Secret creation policy: options can be "Owner" (default) or "Merge"
+  secretCreationPolicy: Owner
+  
+  # Name of the external secret (e.g., the name of the secret in AWS SSM or Secrets Manager)
+  externalSecretName: /myapp/config   # This can be a path to an SSM parameter or Secrets Manager secret name
+
+  # data:                           # The list of keys to sync from external secret manager
+  #   - key: "db-username"           # The key for the secret in your external store (e.g., AWS Secrets Manager)
+  #     remoteKey: "prod/db-username" # The secret name/key in the external secrets provider
+  #     property: "username"         # (Optional) specific property of the secret, if using a JSON object
+  #   - key: "db-password"
+  #     remoteKey: "prod/db-password"
+  #     property: "password"         # You can specify specific properties if the secret is a JSON object
+
+configMaps: {}
+  # - name: config1
+  #   datas:
+  #     - dataName: "key1"
+  #       data: "value1"
+  #     - dataName: "key2"
+  #       data: "value2"
+  # - name: config2
+  #   datas:
+  #     - dataName: init_scripts.sql
+  #       data: |
+  #         |
+  #         DO $$
+  #         BEGIN
+  #             IF NOT EXISTS (
+  #                 SELECT 1 FROM pg_roles WHERE rolname = 'demo_user'
+  #             ) THEN
+  #                 CREATE ROLE demo_user WITH LOGIN PASSWORD 'demo_user';
+  #             END IF;
+  #         END $$;
+  #         DO $$
+  #         BEGIN
+  #             IF NOT EXISTS (
+  #                 SELECT 1 FROM pg_database WHERE datname = 'demo_db'
+  #             ) THEN
+  #                 CREATE DATABASE demo_db WITH OWNER demo_user;
+  #             END IF;
+  #         END $$;
+  #         GRANT ALL PRIVILEGES ON DATABASE demo_db TO demo_user;
+  #         CREATE TABLE country_and_capitals (
+  #             id SERIAL PRIMARY KEY,
+  #             country TEXT NOT NULL,
+  #             capital TEXT NOT NULL
+  #         );
+  #         INSERT INTO country_and_capitals(country, capital) VALUES ('India', 'Delhi');
+  #         INSERT INTO country_and_capitals(country, capital) VALUES ('China', 'Beijing');
+  #         INSERT INTO country_and_capitals(country, capital) VALUES ('Bhutan', 'Thimpu');
+  #         INSERT INTO country_and_capitals(country, capital) VALUES ('Russia', 'Moscow');
+  #         INSERT INTO country_and_capitals(country, capital) VALUES ('America', 'Washington');
+  #         INSERT INTO country_and_capitals(country, capital) VALUES ('England', 'London');
+
+
+
+persistance: 
+  enable: false
+  # name: my-pvc
+  # storageClass: my-storage-class
+  # accessModes: ReadWriteOnce
+  # size: 5Gi

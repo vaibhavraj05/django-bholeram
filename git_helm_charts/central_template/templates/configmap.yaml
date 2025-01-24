@@ -1,0 +1,14 @@
+{{- range .Values.configMaps }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+data:
+  {{- range .datas }}
+  {{ .dataName }}: {{ .data | indent 4 }}
+  {{- end }}
+---
+{{- end }}

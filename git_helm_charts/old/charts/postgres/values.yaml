@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: latest
+  pullPolicy: IfNotPresent
+
+postgresql:
+  username: demo_user
+  password: demo_user
+  database: demo_db
+
+persistence:
+  enabled: true
+  storageClass: my-storage-class
+  accessModes: ReadWriteOnce
+  size: 5Gi
+
+initSqlScripts:
+  enabled: true
+  configMapName: init-sql-scripts

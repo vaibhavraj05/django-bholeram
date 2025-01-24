@@ -1,0 +1,33 @@
+apiVersion: v1
+entries:
+  api:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2024-11-06T17:19:12.590711+05:30"
+    description: A Helm chart for the API deployment
+    digest: 38c3a06eec947dbbfb98a2c23a38274602484101fd549a37e83591bf57b671b2
+    name: api
+    urls:
+    - https://jayjoshi7568.github.io/helm_repo/api-0.1.0.tgz
+    version: 0.1.0
+  app:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-11-06T17:19:12.591178+05:30"
+    description: A Helm chart for Kubernetes app deployment
+    digest: 9daa93852a65e92142f00165a4a15519906fd6e0bdda9f407e85cfedb0f4c890
+    name: app
+    urls:
+    - https://jayjoshi7568.github.io/helm_repo/app-0.1.0.tgz
+    version: 0.1.0
+  postgres:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2024-11-06T17:19:12.591636+05:30"
+    description: A Helm chart for PostgreSQL
+    digest: f29a74bf4faaa28aef373fff0339edffcb0cf20ccca4ff5438e3f8b807ce4045
+    name: postgres
+    urls:
+    - https://jayjoshi7568.github.io/helm_repo/postgres-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-11-06T17:19:12.589891+05:30"
