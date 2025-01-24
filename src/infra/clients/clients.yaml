@@ -1,0 +1,17 @@
+"cdc16":
+  root: avexis-trans
+  crx: avexis-crx
+  robot: avexis-robot
+  vendors: [avexis-accredo, avexis-connectiverx, avexis-vva]
+
+"cdc46":
+  root: cdc46-trans
+  crx: cdc46-crx
+  robot: cdc46-robot
+  vendors:
+    [
+      cdc46-connectiverx,
+      cdc46-iqvia,
+      cdc46-mckesson-biologics,
+      cdc46-rxcrossroads-pap,
+    ]
